@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp AI - Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <div class="login-card">
+                <h1>ðŸ” Admin Login</h1>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required placeholder="admin">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required placeholder="Enter password">
+                    </div>
+                    <div class="form-group">
+                        <label for="api-url">API Base URL</label>
+                        <input type="url" id="api-url" name="api-url" required placeholder="http://localhost:5000" value="http://localhost:5000">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <div id="login-error" class="error-message"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="admin-dashboard" class="screen">
+        <header class="dashboard-header">
+            <h1>ðŸ“± WhatsApp AI - Admin Panel</h1>
+            <div class="header-actions">
+                <span id="api-status" class="status-indicator">â—</span>
+                <span id="current-user"></span>
+                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
+        </header>
+        <main class="dashboard-main">
+            <nav class="tabs">
+                <button class="tab active" data-tab="orders">ðŸ“¦ Orders</button>
+                <button class="tab" data-tab="products">ðŸ›ï¸ Products</button>
+                <button class="tab" data-tab="chat-logs">ðŸ’¬ Chat Logs</button>
+            </nav>
+            <div id="orders-tab" class="tab-content active">
+                <div class="tab-header">
+                    <h2>Order Management</h2>
+                    <div class="tab-actions">
+                        <select id="order-status-filter" class="filter-select">
+                            <option value="all">All Statuses</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <button id="refresh-orders" class="btn btn-icon">ðŸ”„ Refresh</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="orders-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody">
+                            <tr><td colspan="6" class="loading">Loading orders...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="products-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2>Product Management</h2>
+                    <div class="tab-actions">
+                        <button id="add-product-btn" class="btn btn-primary">âž• Add New Product</button>
+                        <button id="refresh-products" class="btn btn-icon">ðŸ”„ Refresh</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="products-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Category</th>
+                                <th>Stock</th>
+                                <th>Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-tbody">
+                            <tr><td colspan="6" class="loading">Loading products...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="chat-logs-tab" class="tab-content">
+                <div class="tab-header">
+                    <h2>Chat Logs</h2>
+                    <div class="tab-actions">
+                        <input type="text" id="customer-filter" class="filter-input" placeholder="Filter by customer ID...">
+                        <button id="refresh-logs" class="btn btn-icon">ðŸ”„ Refresh</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="logs-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Message</th>
+                                <th>Type</th>
+                                <th>AI?</th>
+                                <th>Model</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-tbody">
+                            <tr><td colspan="6" class="loading">Loading chat logs...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="update-order-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Order Status</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="update-order-form">
+                    <div class="form-group">
+                        <label for="order-status">Status</label>
+                        <select id="order-status" name="status" required>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="shipped">Shipped</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="add-product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Product</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-product-form">
+                    <div class="form-group">
+                        <label for="product-name">Name *</label>
+                        <input type="text" id="product-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-price">Price *</label>
+                        <input type="number" id="product-price" name="price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-category">Category *</label>
+                        <input type="text" id="product-category" name="category" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-description">Description</label>
+                        <textarea id="product-description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-sizes">Sizes (comma-separated)</label>
+                        <input type="text" id="product-sizes" name="sizes" placeholder="S, M, L, XL">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-colors">Colors (comma-separated)</label>
+                        <input type="text" id="product-colors" name="colors" placeholder="Red, Blue, Black">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-stock">Stock *</label>
+                        <input type="number" id="product-stock" name="stock" required min="0">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="edit-product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Product</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-product-form">
+                    <input type="hidden" id="edit-product-id">
+                    <div class="form-group">
+                        <label for="edit-product-name">Name *</label>
+                        <input type="text" id="edit-product-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-product-price">Price *</label>
+                        <input type="number" id="edit-product-price" name="price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-product-category">Category *</label>
+                        <input type="text" id="edit-product-category" name="category" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-product-description">Description</label>
+                        <textarea id="edit-product-description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-product-stock">Stock *</label>
+                        <input type="number" id="edit-product-stock" name="stock" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-product-active">
+                            <input type="checkbox" id="edit-product-active" name="is_active">
+                            Active
+                        </label>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="toast" class="toast"></div>
+    <script src="app.js"></script>
+</body>
+</html>
